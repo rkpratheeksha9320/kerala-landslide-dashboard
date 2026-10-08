@@ -16,7 +16,26 @@ from streamlit_folium import st_folium
 def update_live_imerg_risk():
     """Fetch latest IMERG rainfall and update dashboard risk."""
 
-    ee.Initialize(project="alien-span-510505-a4")
+    # Render: use the Earth Engine service-account secret file
+    ee_key_path = "/etc/secrets/earthengine-key.json"
+
+    if os.path.exists(ee_key_path):
+        with open(ee_key_path, "r", encoding="utf-8") as f:
+            ee_key = json.load(f)
+
+        credentials = ee.ServiceAccountCredentials(
+            ee_key["client_email"],
+            key_file=ee_key_path
+        )
+
+        ee.Initialize(
+            credentials=credentials,
+            project="alien-span-510505-a4"
+        )
+
+    else:
+        # Local/Colab fallback
+        ee.Initialize(project="alien-span-510505-a4")
 
     # Load current dashboard data
     current_df = pd.read_csv(
