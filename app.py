@@ -1,14 +1,24 @@
 import json
+import os
+from pathlib import Path
+
 import ee
-import os
-project_dir = "/content/drive/MyDrive/Kerala_Landslide_Project"
-
-import os
-
-import streamlit as st
-import pandas as pd
 import folium
+import numpy as np
+import pandas as pd
+import streamlit as st
 from streamlit_folium import st_folium
+
+
+BASE_DIR = Path(__file__).resolve().parent
+DATA_FILE = BASE_DIR / "kerala_landslide_dashboard_data.csv"
+
+# Streamlit page configuration must be set before any other Streamlit commands.
+st.set_page_config(
+    page_title="Kerala Landslide Early Warning System",
+    page_icon="🌧️",
+    layout="wide"
+)
 
 # =========================================================
 # LIVE IMERG UPDATE
@@ -38,12 +48,7 @@ def update_live_imerg_risk():
         # Local/Colab fallback
         ee.Initialize(project="alien-span-510505-a4")
 
-    # Load current dashboard data
-    from pathlib import Path
-
-    BASE_DIR = Path(__file__).resolve().parent
-    DATA_FILE = BASE_DIR / "kerala_landslide_dashboard_data.csv"
-
+    # Load current dashboard data from the same folder as app.py
     current_df = pd.read_csv(DATA_FILE)
 
     # Latest IMERG observation
@@ -228,16 +233,8 @@ def update_live_imerg_risk():
 
     updated_df["IMERG_Last_Updated_UTC"] = timestamp
 
-    # Save updated dashboard data
-       dashboard_path = os.path.join(
-        os.path.dirname(os.path.abspath(__file__)),
-        "kerala_landslide_dashboard_data.csv"
-    )
-
-    updated_df.to_csv(
-        dashboard_path,
-        index=False
-    )
+    # Save updated dashboard data beside app.py
+    updated_df.to_csv(DATA_FILE, index=False)
 
     return timestamp, updated_df
 
@@ -281,9 +278,6 @@ if st.button(
             st.exception(e)
 
 
-import numpy as np
-
-
 # =========================================================
 # DATA SOURCE TIMESTAMPS
 # =========================================================
@@ -299,16 +293,6 @@ with col1:
 with col2:
     st.info("🌡️ **ERA5-Land Weather Data**\n\n"
             "Last updated: **1 Oct 2026, 23:00 UTC**")
-
-# =========================================================
-# PAGE CONFIGURATION
-# =========================================================
-
-st.set_page_config(
-    page_title="Kerala Landslide Early Warning System",
-    page_icon="🌧️",
-    layout="wide"
-)
 
 # =========================================================
 # CUSTOM CSS
@@ -366,8 +350,6 @@ st.markdown("""
 # =========================================================
 # LOAD DATA
 # =========================================================
-
-DATA_FILE = "kerala_landslide_dashboard_data.csv"
 
 try:
     df = pd.read_csv(DATA_FILE)
