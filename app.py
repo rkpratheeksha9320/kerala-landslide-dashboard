@@ -1,3 +1,4 @@
+import json
 import ee
 import os
 project_dir = "/content/drive/MyDrive/Kerala_Landslide_Project"
