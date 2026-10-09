@@ -39,10 +39,12 @@ def update_live_imerg_risk():
         ee.Initialize(project="alien-span-510505-a4")
 
     # Load current dashboard data
-    current_df = pd.read_csv(
-        "/content/drive/MyDrive/Kerala_Landslide_Project/"
-        "kerala_landslide_dashboard_data.csv"
-    )
+    from pathlib import Path
+
+    BASE_DIR = Path(__file__).resolve().parent
+    DATA_FILE = BASE_DIR / "kerala_landslide_dashboard_data.csv"
+
+    current_df = pd.read_csv(DATA_FILE)
 
     # Latest IMERG observation
     imerg = ee.ImageCollection("NASA/GPM_L3/IMERG_V07")
