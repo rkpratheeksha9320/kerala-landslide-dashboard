@@ -229,10 +229,10 @@ def update_live_imerg_risk():
     updated_df["IMERG_Last_Updated_UTC"] = timestamp
 
     # Save updated dashboard data
-    dashboard_path = (
-        "/content/drive/MyDrive/Kerala_Landslide_Project/"
-        "kerala_landslide_dashboard_data.csv"
-    )
+   dashboard_path = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)),
+    "kerala_landslide_dashboard_data.csv"
+)
 
     updated_df.to_csv(
         dashboard_path,
