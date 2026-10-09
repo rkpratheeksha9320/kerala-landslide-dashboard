@@ -232,7 +232,7 @@ def update_live_imerg_risk():
    dashboard_path = os.path.join(
     os.path.dirname(os.path.abspath(__file__)),
     "kerala_landslide_dashboard_data.csv"
-)
+    )
 
     updated_df.to_csv(
         dashboard_path,
