@@ -286,13 +286,38 @@ st.markdown("### 🕒 Data Source Information")
 
 col1, col2 = st.columns(2)
 
+# Read the saved timestamp from the dashboard CSV
+timestamp_df = pd.read_csv(DATA_FILE)
+
 with col1:
-    st.info("🌧️ **IMERG Rainfall Data**\n\n"
-            "Last updated: **6 Oct 2026, 03:30 UTC**")
+    if "IMERG_Last_Updated_UTC" in timestamp_df.columns:
+        imerg_time = pd.to_datetime(
+            timestamp_df["IMERG_Last_Updated_UTC"].dropna().iloc[0],
+            utc=True
+        )
+        imerg_display = imerg_time.strftime("%d %b %Y, %H:%M UTC")
+    else:
+        imerg_display = "Not updated yet"
+
+    st.info(
+        f"🌧️ **IMERG Rainfall Data**\n\n"
+        f"Last updated: **{imerg_display}**"
+    )
 
 with col2:
-    st.info("🌡️ **ERA5-Land Weather Data**\n\n"
-            "Last updated: **1 Oct 2026, 23:00 UTC**")
+    if "ERA5_Land_Last_Updated_UTC" in timestamp_df.columns:
+        era5_time = pd.to_datetime(
+            timestamp_df["ERA5_Land_Last_Updated_UTC"].dropna().iloc[0],
+            utc=True
+        )
+        era5_display = era5_time.strftime("%d %b %Y, %H:%M UTC")
+    else:
+        era5_display = "Timestamp unavailable"
+
+    st.info(
+        f"🌡️ **ERA5-Land Weather Data**\n\n"
+        f"Last updated: **{era5_display}**"
+    )
 
 # =========================================================
 # CUSTOM CSS
