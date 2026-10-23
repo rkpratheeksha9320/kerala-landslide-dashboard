@@ -289,13 +289,18 @@ col1, col2 = st.columns(2)
 # Read the saved timestamp from the dashboard CSV
 timestamp_df = pd.read_csv(DATA_FILE)
 
+# Read the saved timestamp from the dashboard CSV
+timestamp_df = pd.read_csv(DATA_FILE)
+
 with col1:
     if "IMERG_Last_Updated_UTC" in timestamp_df.columns:
-        imerg_time = pd.to_datetime(
-            timestamp_df["IMERG_Last_Updated_UTC"].dropna().iloc[0],
-            utc=True
-        )
-        imerg_display = imerg_time.strftime("%d %b %Y, %H:%M UTC")
+        imerg_values = timestamp_df["IMERG_Last_Updated_UTC"].dropna()
+
+        if not imerg_values.empty:
+            imerg_time = pd.to_datetime(imerg_values.iloc[0], utc=True)
+            imerg_display = imerg_time.strftime("%d %b %Y, %H:%M UTC")
+        else:
+            imerg_display = "Not updated yet"
     else:
         imerg_display = "Not updated yet"
 
@@ -303,13 +308,16 @@ with col1:
         f"🌧️ **IMERG Rainfall Data**\n\n"
         f"Last updated: **{imerg_display}**"
     )
+
 with col2:
-    if "ERA5_Land_Last_Updated_UTC" in timestamp_df.columns:
-        era5_time = pd.to_datetime(
-            timestamp_df["ERA5_Land_Last_Updated_UTC"].dropna().iloc[0],
-            utc=True
-        )
-        era5_display = era5_time.strftime("%d %b %Y, %H:%M UTC")
+    if "ERA5_Last_Updated_UTC" in timestamp_df.columns:
+        era5_values = timestamp_df["ERA5_Last_Updated_UTC"].dropna()
+
+        if not era5_values.empty:
+            era5_time = pd.to_datetime(era5_values.iloc[0], utc=True)
+            era5_display = era5_time.strftime("%d %b %Y, %H:%M UTC")
+        else:
+            era5_display = "Timestamp unavailable"
     else:
         era5_display = "Timestamp unavailable"
 
