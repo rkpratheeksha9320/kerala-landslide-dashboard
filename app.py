@@ -245,6 +245,15 @@ def update_live_imerg_risk():
     ]:
         updated_df[col] = matched[col].values
 
+    # Update rainfall values
+    for col in [
+        "Rainfall_1Day",
+        "Rainfall_3Day",
+        "Rainfall_5Day",
+        "Rainfall_7Day"
+    ]:
+        updated_df[col] = matched[col].values
+
     # Rainfall scores
     updated_df["Rainfall_1Day_Score"] = (
         updated_df["Rainfall_1Day"] / 100
