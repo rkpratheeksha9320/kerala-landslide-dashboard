@@ -226,16 +226,16 @@ def update_live_imerg_risk():
     valid_soil_count = int(live_soil.notna().sum())
 
     if valid_soil_count == 0:
-        raise ValueError(
-            "No valid live soil-moisture samples were returned."
+        st.warning(
+            "Live soil-moisture data is unavailable. "
+            "Keeping the existing soil-moisture values."
         )
+    else:
+        valid_soil = live_soil.notna()
 
-    valid_soil = live_soil.notna()
-
-    updated_df.loc[valid_soil, "Soil_Moisture"] = (
-        live_soil.loc[valid_soil].to_numpy()
-    )
-
+        updated_df.loc[valid_soil, "Soil_Moisture"] = (
+            live_soil.loc[valid_soil].to_numpy()
+        )
     # Update rainfall values — keep this loop only once
     for col in [
         "Rainfall_1Day",
