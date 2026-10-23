@@ -98,7 +98,18 @@ def update_live_imerg_risk():
         .addBands(rainfall_5day)
         .addBands(rainfall_7day)
     )
-
+    # Live soil moisture from ERA5-Land
+    soil_moisture_image = (
+        ee.ImageCollection("ECMWF/ERA5_LAND/HOURLY")
+        .filterDate(
+            end_date.advance(-1, "day"),
+            end_date
+        )
+        .select("volumetric_soil_water_layer_1")
+        .mean()
+        .rename("Live_Soil_Moisture")
+    )
+    
     # Create EE points from dashboard locations
     features = []
 
@@ -113,7 +124,33 @@ def update_live_imerg_risk():
         )
 
     grid_ee = ee.FeatureCollection(features)
+    
+    # Sample live soil moisture at dashboard locations
+    soil_samples = soil_moisture_image.sampleRegions(
+        collection=grid_ee,
+        scale=11132,
+        geometries=True,
+        tileScale=4
+    )
 
+    soil_features = soil_samples.getInfo()["features"]
+
+    soil_rows = []
+
+    for feature in soil_features:
+        props = feature["properties"]
+        coords = feature["geometry"]["coordinates"]
+
+        soil_rows.append({
+            "Longitude": coords[0],
+            "Latitude": coords[1],
+            "Live_Soil_Moisture": props.get(
+                "Live_Soil_Moisture"
+            )
+        })
+
+    soil_df = pd.DataFrame(soil_rows)
+    
     # Sample IMERG
     samples = dynamic_rainfall.sampleRegions(
         collection=grid_ee,
@@ -163,6 +200,35 @@ def update_live_imerg_risk():
 
     updated_df = current_df.reset_index(drop=True).copy()
 
+    # Match live soil moisture to dashboard locations
+    soil_coords = soil_df[
+        ["Latitude", "Longitude"]
+    ].to_numpy()
+
+    soil_nn = NearestNeighbors(n_neighbors=1)
+    soil_nn.fit(soil_coords)
+
+    _, soil_indices = soil_nn.kneighbors(
+        dashboard_coords
+    )
+
+    matched_soil = soil_df.iloc[
+        soil_indices[:, 0]
+    ].reset_index(drop=True)
+
+    # Update only where live soil moisture is available
+    live_soil = pd.to_numeric(
+        matched_soil["Live_Soil_Moisture"],
+        errors="coerce"
+    )
+
+    valid_soil = live_soil.notna()
+
+    updated_df.loc[valid_soil, "Soil_Moisture"] = (
+        live_soil.loc[valid_soil].to_numpy()
+    )
+
+    # Update rainfall values
     for col in [
         "Rainfall_1Day",
         "Rainfall_3Day",
@@ -195,7 +261,12 @@ def update_live_imerg_risk():
         + 0.25 * updated_df["Rainfall_7Day_Score"]
     )
 
-    # Soil moisture
+    # Soil moisture score from the updated moisture values
+    updated_df["Soil_Moisture"] = pd.to_numeric(
+        updated_df["Soil_Moisture"],
+        errors="coerce"
+    )
+
     updated_df["Soil_Moisture_Score"] = (
         updated_df["Soil_Moisture"] / 0.30
     ).clip(0, 1)
