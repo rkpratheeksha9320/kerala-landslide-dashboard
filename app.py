@@ -603,6 +603,74 @@ else:
         f"🟢 LOW RISK — {selected_location}"
     )
 
+
+# =========================================================
+# MODEL ALERT POPUP
+# =========================================================
+
+if warning_level == "Critical":
+    st.markdown(
+        f"""
+        <div style="
+            background-color:#ffebee;
+            border:3px solid #d32f2f;
+            border-radius:15px;
+            padding:25px;
+            margin:20px 0;
+            text-align:center;
+            box-shadow:0 4px 12px rgba(0,0,0,0.2);
+        ">
+            <h2 style="color:#b71c1c;">🚨 MODEL ALERT — CRITICAL LANDSLIDE RISK</h2>
+            <h3>{selected_location}</h3>
+            <p style="font-size:18px;">
+                The model indicates a <b>critical landslide risk</b>
+                for the selected location.
+            </p>
+            <p style="font-size:16px;">
+                <b>Dynamic Risk Score:</b>
+                {location_result["Dynamic_Risk_Score"]:.3f}
+            </p>
+            <p style="color:#555;">
+                ⚠️ This is a model-based research alert and
+                not an official government warning.
+            </p>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+elif warning_level == "High":
+    st.markdown(
+        f"""
+        <div style="
+            background-color:#fff3e0;
+            border:3px solid #f57c00;
+            border-radius:15px;
+            padding:25px;
+            margin:20px 0;
+            text-align:center;
+            box-shadow:0 4px 12px rgba(0,0,0,0.15);
+        ">
+            <h2 style="color:#e65100;">🚨 MODEL ALERT — HIGH LANDSLIDE RISK</h2>
+            <h3>{selected_location}</h3>
+            <p style="font-size:18px;">
+                The model indicates an <b>elevated landslide risk</b>
+                for the selected location.
+            </p>
+            <p style="font-size:16px;">
+                <b>Dynamic Risk Score:</b>
+                {location_result["Dynamic_Risk_Score"]:.3f}
+            </p>
+            <p style="color:#555;">
+                ⚠️ This is a model-based research alert and
+                not an official government warning.
+            </p>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+
 # ---------------------------------------------------------
 # HIGH RISK TEST ALERT
 # ---------------------------------------------------------
