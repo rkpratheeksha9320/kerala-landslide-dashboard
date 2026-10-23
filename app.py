@@ -216,11 +216,11 @@ def update_live_imerg_risk():
         soil_indices[:, 0]
     ].reset_index(drop=True)
 
-# Update only where live soil moisture is available
-live_soil = pd.to_numeric(
-    matched_soil["Live_Soil_Moisture"],
-    errors="coerce"
-)
+    # Update only where live soil moisture is available
+    live_soil = pd.to_numeric(
+        matched_soil["Live_Soil_Moisture"],
+        errors="coerce"
+    )
 
     # Validate live soil-moisture samples
     valid_soil_count = int(live_soil.notna().sum())
