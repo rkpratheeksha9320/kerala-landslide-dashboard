@@ -222,19 +222,19 @@ live_soil = pd.to_numeric(
     errors="coerce"
 )
 
-# Validate live soil-moisture samples
-valid_soil_count = int(live_soil.notna().sum())
+    # Validate live soil-moisture samples
+    valid_soil_count = int(live_soil.notna().sum())
 
-if valid_soil_count == 0:
-    raise ValueError(
-        "No valid live soil-moisture samples were returned."
+    if valid_soil_count == 0:
+        raise ValueError(
+            "No valid live soil-moisture samples were returned."
+        )
+
+    valid_soil = live_soil.notna()
+
+    updated_df.loc[valid_soil, "Soil_Moisture"] = (
+        live_soil.loc[valid_soil].to_numpy()
     )
-
-valid_soil = live_soil.notna()
-
-updated_df.loc[valid_soil, "Soil_Moisture"] = (
-    live_soil.loc[valid_soil].to_numpy()
-)
 
     # Update rainfall values
     for col in [
