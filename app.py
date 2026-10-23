@@ -236,16 +236,7 @@ def update_live_imerg_risk():
         live_soil.loc[valid_soil].to_numpy()
     )
 
-    # Update rainfall values
-    for col in [
-        "Rainfall_1Day",
-        "Rainfall_3Day",
-        "Rainfall_5Day",
-        "Rainfall_7Day"
-    ]:
-        updated_df[col] = matched[col].values
-
-    # Update rainfall values
+    # Update rainfall values — keep this loop only once
     for col in [
         "Rainfall_1Day",
         "Rainfall_3Day",
