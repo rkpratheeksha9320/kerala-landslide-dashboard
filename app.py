@@ -671,55 +671,6 @@ elif warning_level == "High":
     )
 
 
-# ---------------------------------------------------------
-# HIGH RISK TEST ALERT
-# ---------------------------------------------------------
-
-if st.session_state.test_alert == "High":
-
-    st.warning("🚨 MODEL ALERT — HIGH LANDSLIDE RISK")
-
-    st.markdown(
-        f"""
-        ### 📍 TEST LOCATION
-
-        **The model indicates an elevated landslide risk for this location.**
-
-        **Dynamic Risk Score:** `0.68`
-
-        ⚠️ **This is a model-based research alert and not an official government warning.**
-        """
-    )
-
-    if st.button("✖️ Close Alert", key="close_high_popup"):
-        st.session_state.test_alert = None
-        st.rerun()
-
-
-# ---------------------------------------------------------
-# CRITICAL RISK TEST ALERT
-# ---------------------------------------------------------
-
-elif st.session_state.test_alert == "Critical":
-
-    st.error("🚨 MODEL ALERT — CRITICAL LANDSLIDE RISK")
-
-    st.markdown(
-        f"""
-        ### 📍 TEST LOCATION
-
-        **The model indicates a critical landslide risk for this location.**
-
-        **Dynamic Risk Score:** `0.89`
-
-        ⚠️ **This is a model-based research alert and not an official government warning.**
-        """
-    )
-
-    if st.button("✖️ Close Alert", key="close_critical_popup"):
-        st.session_state.test_alert = None
-        st.rerun()
-
 # =========================================================
 # RAINFALL DETAILS
 # =========================================================
