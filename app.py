@@ -290,7 +290,7 @@ col1, col2 = st.columns(2)
 timestamp_df = pd.read_csv(DATA_FILE)
 
 with col1:
-    if "IMERG_Last_Updated_UTC" in timestamp_df.columns:
+   if "ERA5_Last_Updated_UTC" in timestamp_df.columns:
         imerg_time = pd.to_datetime(
             timestamp_df["IMERG_Last_Updated_UTC"].dropna().iloc[0],
             utc=True
